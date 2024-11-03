@@ -1,0 +1,47 @@
+### `.gitignore`
+```gitignore
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# PyInstaller
+*.spec
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Database files
+*.sqlite3
+*.db
+
+# Environment variables
+.env
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# Python virtual environment
+Pipfile.lock
+poetry.lock
+
+# System files
+.DS_Store
+Thumbs.db
