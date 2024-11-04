@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST Request Button</title>
+</head>
+<body>
+    <button onclick="sendPostRequest()">Register with Random Data</button>
+
+    <script>
+        function sendPostRequest() {
+            const randomEmail = `user${Math.floor(Math.random() * 10000)}@example.com`;
+            const randomPassword = `password${Math.floor(Math.random() * 10000)}`;
+            const randomUsername = `user${Math.floor(Math.random() * 10000)}`;
+
+            const url = `http://127.0.0.1:5000/register?email=timon@riegerx.de&password=timon&username=timon&then=https://www.example.com`;
+
+            fetch(url, {
+                method: 'POST',
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    alert('Request sent successfully!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
