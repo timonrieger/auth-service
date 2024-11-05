@@ -72,11 +72,5 @@ def confirm():
     return redirect(data['then'])
 
 
-@app.route('/users', methods=['GET'])
-def users():
-    users = User.query.all()
-    return jsonify([user.to_dict() for user in users]), 200
-
-
 if __name__ == '__main__':
     app.run(debug=True)
