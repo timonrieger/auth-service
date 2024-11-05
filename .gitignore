@@ -19,12 +19,6 @@ venv/
 dist/
 build/
 
-# PyInstaller
-*.spec
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
 # Database files
 *.sqlite3
 *.db
