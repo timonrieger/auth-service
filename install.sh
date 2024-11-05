@@ -6,8 +6,8 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
-# Install requirements
-pip install -r requirements.txt
-
 # Install the package from GitHub
 pip install git+https://$GITHUB_TOKEN@github.com/timonrieger/database-service.git
+
+# Install requirements
+pip install -r requirements.txt
