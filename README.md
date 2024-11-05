@@ -1,29 +1,83 @@
-# Private Auth Service
+# Centralized Authentication Service
 
-    •	Each of your apps should have a login form that collects user credentials and sends them to the central Auth Service’s /login endpoint.
-	•	Store the returned JWT token in the client (e.g., in a browser’s localStorage or sessionStorage).
-	•	Use the /validate-token endpoint to validate the JWT for protected routes.
+This project is a Flask-based centralized authentication service that provides user registration, login, and email confirmation functionalities. It uses the [`database-service`](https://github.com/timonrieger/database-service.git) as database schema.
 
-## Register
+## Features
 
-```bash
-curl -X POST http://127.0.0.1:5000/register \
--H "Content-Type: application/json" \
--d '{"email": "testuser@example.com", "password": "mypassword"}'
-```
+- User registration with email confirmation
+- User login with password hashing
+- Email token generation and validation for account confirmation
 
-## Login
+## Requirements
 
-```bash
-curl -X POST http://127.0.0.1:5000/login \
--H "Content-Type: application/json" \
--d '{"email": "testuser@example.com", "password": "mypassword"}'
-```
+- Python 3.x
+- Flask
+- Flask-SQLAlchemy
+- Werkzeug
+- python-dotenv
 
-## Validate Token
+## Setup
 
-```bash
-curl -X POST http://127.0.0.1:5000/validate-token \
--H "Content-Type: application/json" \
--d '{"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VyX2VtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20ifQ.djxyDo5Unsaj8d9luBY5y1WN-v8Fr6HD6NO-G5ULbMw"}'
-```
+1. Clone the repository:
+	```sh
+	git clone https://github.com/timonrieger/auth-service.git
+	cd auth-service
+	```
+
+2. Create a virtual environment and activate it:
+	```sh
+	python -m venv venv
+	source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+	```
+
+3. Install the required packages:
+	```sh
+	pip install -r requirements.txt
+	```
+
+4. Create a `.env` file in the root directory and add your configuration:
+	```env
+	SECRET=your_secret_key
+	DB_URI=your_database_uri
+	```
+
+5. Run the application:
+	```sh
+	python main.py
+	```
+
+## Endpoints
+
+- `GET /` - Home endpoint to check if the service is operating.
+- `POST /register` - Endpoint to register a new user.
+- `POST /login` - Endpoint to login an existing user.
+- `GET /confirm` - Endpoint to confirm a user's email.
+
+## Usage
+
+### Register a new user
+
+Send a POST request to `/register` with the following parameters:
+- `email`
+- `password`
+- `username`
+- `then` (URL to redirect after confirmation)
+
+### Login
+
+Send a POST request to `/login` with the following parameters:
+- `email`
+- `password`
+
+### Confirm Email
+
+Send a GET request to `/confirm` with the following parameters:
+- `id` (user ID)
+- `token` (confirmation token)
+- `then` (redirect URL to include in the confirmation email)
+
+You might want to change the email content in `utils.py`
+
+## License
+
+This project is licensed under the MIT License.
