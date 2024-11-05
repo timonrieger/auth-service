@@ -10,7 +10,6 @@ This project is a Flask-based centralized authentication service that provides u
 
 ## Requirements
 
-- Python 3.x
 - Flask
 - Flask-SQLAlchemy
 - Werkzeug
@@ -35,7 +34,7 @@ This project is a Flask-based centralized authentication service that provides u
 	pip install -r requirements.txt
 	```
 
-4. Create a `.env` file in the root directory and add your configuration:
+4. Create a `.env` file in the root directory and add your configuration settings. Use the database URL provided by your hosting service. Ensure the connection string matches the one used in the database:
 	```env
 	SECRET=your_secret_key
 	DB_URI=your_database_uri
@@ -43,7 +42,7 @@ This project is a Flask-based centralized authentication service that provides u
 
 5. Run the application:
 	```sh
-	python main.py
+	python3 -m main
 	```
 
 ## Endpoints
@@ -80,4 +79,4 @@ You might want to change the email content in `utils.py`
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
