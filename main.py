@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, flash, render_template, request, jsonify, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import db, create_all, User
-from utils import MailManager
+from utils import Manager
 from dotenv import load_dotenv
 import os
 
@@ -9,13 +9,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.config['SECRET'] = os.getenv("SECRET")
+app.config['SECRET_KEY'] = os.getenv("SECRET")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-manager = MailManager()
+manager = Manager()
 
 with app.app_context():
     create_all(app)
@@ -47,7 +47,9 @@ def register():
         user.token = manager.generate_token(expire=manager.valid_hours*3600)
         new_user = user
     db.session.commit()
-    manager.build_email(user_id=new_user.id, user_mail=new_user.email, username=new_user.username, redirect_url=data['then'])
+    mail = manager.create_mail(user_mail=new_user.email, user_id=new_user.id, redirect_url=data['then'], task='confirm', username=new_user.username)
+    mail.build_email()
+    mail.send_email()
     return jsonify({'message': f'Registration successful! Please confirm your account by clicking the link in the email we sent to {new_user.email}.'}), 200
 
 
@@ -67,11 +69,52 @@ def confirm():
     data = request.args.to_dict()
     user = User.query.get(data['id'])
     if user and user.confirmed == 1:
-        pass
-    elif manager.check_token(data['token']):
-        user.confirmed = 1
+        return jsonify({'message': 'Already confirmed!'}), 400
+    if not user or not manager.check_token(data['token']):
+        return jsonify({'message': 'Invalid confirmation link! You need to register again.'}), 400
+    user.confirmed = 1
     db.session.commit()
-    return redirect(data['then'])
+    flash("Account confirmation successful!")
+    return render_template('redirect.html', redirect_url=data['then'])
+
+
+@app.route('/reset', methods=['POST'])
+def reset_request():
+    data = request.args.to_dict()
+    user = User.query.filter_by(email=data['email']).first()
+    if user:
+        user.token = manager.generate_token(expire=manager.valid_hours*3600)
+        db.session.commit()
+        mail = manager.create_mail(user_mail=user.email, user_id=user.id, redirect_url=data['then'], task='reset', username=user.username)
+        mail.build_email()
+        mail.send_email()
+        return jsonify({'message': f'Password reset email sent to {user.email}.'}), 200
+    return jsonify({'message': 'Invalid email address!'}), 400
+
+
+@app.route('/reset', methods=['GET'])
+def reset_open():
+    data = request.args.to_dict()
+    user = User.query.get(data['id'])
+    if not user or not manager.check_token(data['token']):
+        flash("Invalid reset link! Please request a new one.")
+        return render_template('redirect.html', redirect_url=data['then'])
+    
+    return render_template('reset.html', id=user.id, then=data['then'], token=data['token'])
+
+
+@app.route('/password/reset', methods=['POST'])
+def reset_submit():
+    user = User.query.get(int(request.form.get('id')))
+    if not user or not manager.check_token(request.form.get('token')):
+        flash("Invalid reset link! Please request a new one.")
+        return render_template('redirect.html', redirect_url=request.form.get('then'))
+    user.password = generate_password_hash(request.form.get('password'), "pbkdf2:sha256", 8)
+    manager.delete_token(request.form.get('token'))
+    user.token = manager.generate_token(expire=manager.valid_hours*3600)
+    db.session.commit()
+    flash("Password reset successful!")
+    return render_template('redirect.html', redirect_url=request.form.get('then'))
 
 
 if __name__ == '__main__':
