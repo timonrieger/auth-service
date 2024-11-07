@@ -31,7 +31,7 @@ def register():
     data = request.args.to_dict()
     user = User.query.filter_by(email=data['email']).first()
     if user and user.confirmed == 1:  # user exists and confirmed
-        return jsonify({'message': 'Already registered'}), 400
+        return jsonify({'message': 'Already registered!'}), 400
     hashed_password = generate_password_hash(data['password'], "pbkdf2:sha256", 8)
     if not user:  # new user
         new_user = User(
@@ -55,9 +55,11 @@ def register():
 def login():
     data = request.args.to_dict()
     user = User.query.filter_by(email=data['email']).first()
+    if not user.confirmed:
+        return jsonify({'message': 'Please confirm your email address first.'}), 401
     if user and check_password_hash(user.password, data['password']):
-        return jsonify({'message': 'Login successful'}), 200
-    return jsonify({'message': 'Invalid credentials'}), 401
+        return jsonify({'message': 'Login successful!'}), 200
+    return jsonify({'message': 'Invalid credentials!'}), 401
 
 
 @app.route('/confirm', methods=['GET'])
