@@ -10,7 +10,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = os.getenv("SECRET")
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -119,14 +119,5 @@ def reset_submit():
     return render_template('redirect.html', redirect_url=request.form.get('then'))
 
 
-@app.errorhandler(HTTPException)
-def handle_http_error(e):
-    return jsonify(type=e.name, code=e.code, error=e.description), e.code
-
-
-@app.errorhandler(Exception)
-def handle_http_error(e):
-    return jsonify(type=e.name, code=e.code, error=e.description), e.code
-
 if __name__ == '__main__':
-    app.run(debug=False, port=5002)
+    app.run(debug=False)

@@ -36,7 +36,7 @@ This project is a Flask-based centralized authentication service that provides u
 
 4. Create a `.env` file in the root directory and add your configuration settings. Use the database URL provided by your hosting service. Ensure the connection string matches the one used in the database:
 	```env
-	SECRET=your_secret_key
+	SECRET_KEY=your_secret_key
 	DB_URI=your_database_uri
 	```
 
