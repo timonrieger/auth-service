@@ -43,8 +43,10 @@ class MailManager():
         confirmation_link = f"https://auth.timonrieger.de/confirm?id={user_id}&token={token}&then={redirect_url}"
         message = (f"Subject: Account Confirmation Link\n\n"
                    f"Hello {username},\n\n"
-                   f"Thank you for signing up! To complete your registration, please click the link below within the next {self.valid_hours} hours:\n\n"
+                   f"Thank you for signing up! You can now use your credentials across any of my projects that support accounts."
+                   f"To complete your registration, please click the link below within the next {self.valid_hours} hours:\n\n"
                    f"{confirmation_link}\n\n"
+                   f"If you forgot clicking the link, register again.\n\n"
                    f"If you did not request this registration or have any questions, please ignore this message.\n\n"
-                   f"Best regards,\n\nTimon Rieger")
+                   f"Best regards,\n\nTimon Rieger\nhttps://timonrieger.de")
         return self.send_email(user_mail, message)
