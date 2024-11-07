@@ -48,7 +48,7 @@ def register():
         user.token = manager.generate_token(expire=manager.valid_hours*3600)
         new_user = user
     db.session.commit()
-    mail = manager.create_mail(user_mail=new_user.email, user_id=new_user.id, redirect_url=data['then'], task='confirm', username=new_user.username)
+    mail = manager.create_mail(user_mail=new_user.email, user_id=new_user.id, redirect_url=data['then'], task='confirm', username=new_user.username, token=new_user.token)
     mail.build_email()
     mail.send_email()
     return jsonify({'message': f'Registration successful! Please confirm your account by clicking the link in the email we sent to {new_user.email}.'}), 200
@@ -87,7 +87,7 @@ def reset_request():
     if user:
         user.token = manager.generate_token(expire=manager.valid_hours*3600)
         db.session.commit()
-        mail = manager.create_mail(user_mail=user.email, user_id=user.id, redirect_url=data['then'], task='reset', username=user.username)
+        mail = manager.create_mail(user_mail=user.email, user_id=user.id, redirect_url=data['then'], task='reset', username=user.username, token=user.token)
         mail.build_email()
         mail.send_email()
         return jsonify({'message': f'Password reset email sent to {user.email}.'}), 200

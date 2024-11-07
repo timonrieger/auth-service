@@ -45,14 +45,14 @@ class Manager:
             return True
         return False
     
-    def create_mail(self, user_mail, user_id, redirect_url, task, username=""):
+    def create_mail(self, user_mail, user_id, redirect_url, task, token, username=""):
         """Create a Mail instance with user information."""
-        return self.Mail(self, user_mail, user_id, redirect_url, task, username)
+        return self.Mail(self, user_mail, user_id, redirect_url, task, token, username)
 
 
     class Mail:
         
-        def __init__(self, manager, user_mail, user_id, redirect_url, task, username=""):
+        def __init__(self, manager, user_mail, user_id, redirect_url, task, token, username=""):
             self.user_mail = user_mail
             self.user_id = user_id
             self.redirect_url = redirect_url
@@ -62,6 +62,7 @@ class Manager:
             self.link = ""
             self.token = ""
             self.manager = manager
+            self.token = token
             
 
         def build_link(self):
@@ -93,7 +94,6 @@ class Manager:
 
         def build_email(self):
             """Build the email based on the task type."""
-            self.token = self.manager.generate_token(expire=True)
             self.link = self.build_link()
             if self.task == "confirm":
                 self.message = self.build_account_confirmation_message()
