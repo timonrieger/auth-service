@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <script>
+        // Redirect after 3 seconds
+        setTimeout(function() {
+            window.location.href = "{{ redirect_url }}";
+        }, 3000);
+    </script>
+</head>
+<body>
+    <h1>{{ get_flashed_messages()[0] }}</h1>
+    <p>You will be redirected shortly... <br>
+       If not, <a href="{{ redirect_url }}">click here</a> to continue.</p>
+</body>
+</html>

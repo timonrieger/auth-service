@@ -1,5 +1,6 @@
-from flask import Flask, flash, render_template, request, jsonify, redirect
+from flask import Flask, flash, render_template, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.exceptions import HTTPException
 from database import db, create_all, User
 from utils import Manager
 from dotenv import load_dotenv
@@ -71,7 +72,8 @@ def confirm():
     if user and user.confirmed == 1:
         return jsonify({'message': 'Already confirmed!'}), 400
     if not user or not manager.check_token(data['token']):
-        return jsonify({'message': 'Invalid confirmation link! You need to register again.'}), 400
+        flash("Invalid confirmation link! You need to register again.")
+        return render_template('redirect.html', redirect_url=data['then'])
     user.confirmed = 1
     db.session.commit()
     flash("Account confirmation successful!")
@@ -117,5 +119,14 @@ def reset_submit():
     return render_template('redirect.html', redirect_url=request.form.get('then'))
 
 
+@app.errorhandler(HTTPException)
+def handle_http_error(e):
+    return jsonify(type=e.name, code=e.code, error=e.description), e.code
+
+
+@app.errorhandler(Exception)
+def handle_http_error(e):
+    return jsonify(type=e.name, code=e.code, error=e.description), e.code
+
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=False, port=5002)
