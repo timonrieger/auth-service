@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 
 class Manager:
 
-    def __init__(self, my_mail=os.getenv("GMAIL"), email_password=os.getenv("GMAIL_PWD"), valid_hours=24):
+    def __init__(self, my_mail=os.getenv("SMTP_EMAIL"), email_password=os.getenv("SMTP_PWD"), valid_hours=24):
         self.tokens = {}
         self.valid_hours = valid_hours
         self.my_mail = my_mail
