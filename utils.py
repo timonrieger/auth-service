@@ -104,7 +104,7 @@ class Manager:
         
         def send_email(self):
             """Send the email message using SMTP."""
-            with smtplib.SMTP("smtp.gmail.com", port=587) as server:
+            with smtplib.SMTP(os.getenv("SMTP_SERVER"), port=int(os.getenv("SMTP_PORT"))) as server:
                 server.starttls()
                 server.login(self.manager.my_mail, self.manager.email_password)
                 server.sendmail(self.manager.my_mail, self.user_mail, self.message)
