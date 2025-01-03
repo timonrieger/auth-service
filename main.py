@@ -1,6 +1,5 @@
 from flask import Flask, flash, render_template, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.exceptions import HTTPException
 from database import db, create_all, User
 from utils import Manager
 from dotenv import load_dotenv
@@ -82,6 +81,46 @@ def login():
         return jsonify({'message': 'Login successful!'}), 200
     
     return jsonify({'message': 'Invalid credentials!'}), 401
+
+
+@app.route('/apikey/verify', methods=['GET'])
+def verify_apikey():
+    token = request.headers.get('Authorization')
+    if token is None:
+        return {"error": "No authorization header provided."}
+    try:
+        user_id, auth_token = token.split(".")
+    except Exception:
+        return {"error": "Invalid authorization header."}
+    
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'message': 'No user found!'}), 400
+    if not user.confirmed:
+        return jsonify({'message': 'Please confirm your email address first.'}), 401
+    
+    if check_password_hash(user.apikey, token):
+        return jsonify({'message': 'Verification successful!'}), 200
+    
+    return jsonify({'message': 'Invalid credentials!'}), 401
+
+
+@app.route('/apikey/create', methods=['POST'])
+def create_apikey():
+    data = request.get_json()
+    if not data:
+        return jsonify({'message': 'Invalid data!'}), 400
+
+    user = User.query.filter_by(id=data['id']).first()
+
+    if not user:
+        return jsonify({'message': 'No user found!'}), 400
+    plain_key = f"{user.id}.{manager.generate_token()}"
+    hashed_key = generate_password_hash(plain_key, "pbkdf2:sha256", 8)
+    user.apikey = hashed_key
+    
+    db.session.commit()
+    return jsonify({'message': f'API Key created successful! Use it in the API request Authorization header.', 'data': plain_key}), 200
 
 
 @app.route('/confirm', methods=['GET'])

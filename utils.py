@@ -16,7 +16,7 @@ class Manager:
         self.email_password = email_password
         
 
-    def generate_token(self, expire):
+    def generate_token(self, expire=False):
         """Generate a random token."""
         characters = string.ascii_letters + string.digits
         token = ''.join(secrets.choice(characters) for i in range(20))
