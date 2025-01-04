@@ -100,7 +100,7 @@ def verify_apikey():
         return jsonify({'message': 'Please confirm your email address first.'}), 401
     
     if check_password_hash(user.apikey, token):
-        return jsonify({'message': 'Verification successful!'}), 200
+        return jsonify({'message': 'Verification successful!', 'user_id': user_id}), 200
     
     return jsonify({'message': 'Invalid credentials!'}), 401
 
