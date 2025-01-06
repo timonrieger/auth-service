@@ -64,7 +64,7 @@ def register():
     mail.build_email()
     mail.send_email()
 
-    return jsonify({'message': f'Registration successful! Please confirm your account by clicking the link in the email we sent to {new_user.email}.'}), 200
+    return jsonify({'message': f'Registration successful, {user.username}! Please confirm your account by clicking the link in the email we sent to {new_user.email}.'}), 200
 
 
 @app.route('/login', methods=['POST'])
@@ -78,7 +78,7 @@ def login():
         return jsonify({'message': 'Please confirm your email address first.'}), 401
     
     if check_password_hash(user.password, data['password']):
-        return jsonify({'message': 'Login successful!'}), 200
+        return jsonify({'message': f'Login successful, {user.username}!'}), 200
     
     return jsonify({'message': 'Invalid credentials!'}), 401
 
