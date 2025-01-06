@@ -74,7 +74,7 @@ class Manager:
             """Build the account confirmation message."""
             return (f"Subject: Account Confirmation Link\n\n"
                     f"Hello {self.username},\n\n"
-                    f"Thank you for signing up! You can now use your credentials across any of my projects that support accounts."
+                    f"Thank you for signing up! You can now use your credentials across any of my projects that support accounts.\n"
                     f"To complete your registration, please click the link below within the next {self.manager.valid_hours} hours:\n\n"
                     f"{self.link}\n\n"
                     f"If you forgot clicking the link, register again.\n\n"
