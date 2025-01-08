@@ -89,7 +89,7 @@ def verify_apikey():
     if token is None:
         return {"error": "No authorization header provided."}
     try:
-        user_id, auth_token = token.split(".")
+        user_id, _ = token.split(".")
     except Exception:
         return {"error": "Invalid authorization header."}
     

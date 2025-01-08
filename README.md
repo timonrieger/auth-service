@@ -85,7 +85,6 @@ data = {"email": email, "password": password, "username": username, "then": "htt
 response = requests.post(f"{AUTH_URL}/register", json=data)
 ```
 
-
 ### Login
 
 Send a POST request to `/login` with the following parameters:
@@ -126,6 +125,26 @@ Send a GET request to `/apikey/verify` with the authorization header:
 ```python
 headers = {'Authorization': token}
 response = requests.get(url=f"{AUTH_URL}/apikey/verify", headers=headers)
+```
+
+### Response
+
+Returns status code 200 on success. Anything else is considered to be an error. The response also always contains a message.
+```python
+response.status_code
+response.json()['message']
+```
+
+### Example
+
+Your code might look like this for logging a user in (using flask and flask_login):
+```python
+response = requests.post(url=f"{AUTH_URL}/login", json=data)
+if response.status_code == 200:
+		flash(response.json()['message'], "success")
+		login_user(user)
+		return redirect(url_for("home"))
+flash(response.json()['message'], "error")
 ```
 
 ## Configuration
