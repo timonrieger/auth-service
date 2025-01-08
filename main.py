@@ -153,7 +153,7 @@ def reset_request():
             user_mail=user.email, 
             user_id=user.id, 
             redirect_url=data['then'], 
-            task='reset', 
+            task='password/reset', 
             username=user.username, 
             token=user.token
         )
@@ -164,7 +164,7 @@ def reset_request():
     return jsonify({'message': 'Invalid email address!'}), 400
 
 
-@app.route('/reset', methods=['GET'])
+@app.route('/password/reset', methods=['GET'])
 def reset_open():
     data = request.args.to_dict()
     user = User.query.get(data['id'])
