@@ -4,6 +4,7 @@ import time
 import secrets
 import smtplib
 import string
+from email_validator import validate_email, EmailNotValidError
 
 dotenv.load_dotenv()
 
@@ -14,7 +15,18 @@ class Manager:
         self.valid_hours = valid_hours
         self.my_mail = my_mail
         self.email_password = email_password
-        
+
+    def validate_email(self, email, check_deliverability=False):
+        '''Validates and email address and returns the normalized version.'''
+        try:
+            email_info = validate_email(email, check_deliverability=check_deliverability)
+            email = email_info.normalized
+
+        except EmailNotValidError:
+            email = None
+
+        finally:
+            return email
 
     def generate_token(self, expire=False):
         """Generate a random token."""

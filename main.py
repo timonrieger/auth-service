@@ -32,14 +32,18 @@ def register():
     if not data:
         return jsonify({'message': 'Invalid data!'}), 400
 
-    user = User.query.filter_by(email=data['email']).first()
+    valid_email = manager.validate_email(data['email'], check_deliverability=True)
+    if not valid_email:
+        return jsonify({'message': 'Invalid email address!'}), 400
+    
+    user = User.query.filter_by(email=valid_email).first()
     if user and user.confirmed == 1:
         return jsonify({'message': 'Already registered!'}), 400
     
     hashed_password = generate_password_hash(data['password'], "pbkdf2:sha256", 8)
     if not user:
         new_user = User(
-            email=data['email'],
+            email=valid_email,
             password=hashed_password,
             username=data['username'],
             token=manager.generate_token(expire=manager.valid_hours*3600)
@@ -64,7 +68,7 @@ def register():
     mail.build_email()
     mail.send_email()
 
-    return jsonify({'message': f'Registration successful, {user.username}! Please confirm your account by clicking the link in the email we sent to {new_user.email}.'}), 200
+    return jsonify({'message': f'Registration successful, {new_user.username}! Please confirm your account by clicking the link in the email we sent to {new_user.email}.'}), 200
 
 
 @app.route('/login', methods=['POST'])
@@ -72,8 +76,12 @@ def login():
     data = request.get_json()
     if not data:
         return jsonify({'message': 'Invalid data!'}), 400
+    
+    valid_email = manager.validate_email(data['email'])
+    if not valid_email:
+        return jsonify({'message': 'Invalid email address!'}), 400
 
-    user = User.query.filter_by(email=data['email']).first()
+    user = User.query.filter_by(email=valid_email).first()
     if not user or not user.confirmed:
         return jsonify({'message': 'Please confirm your email address first.'}), 401
     
