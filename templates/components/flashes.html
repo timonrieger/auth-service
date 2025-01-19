@@ -1,0 +1,10 @@
+{% if get_flashed_messages() %}
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    {% if category == 'danger' %}
+      <h4 style="color: red">{{ message|safe }}</h4>
+    {% elif category == 'success'%}
+      <h4 style="color: green">{{ message|safe }}</h4>
+    {% endif %}
+    </div>
+  {% endfor %}
+{% endif %}

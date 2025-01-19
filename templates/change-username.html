@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Username Change</title>
+</head>
+<body>
+    <h2>Change Username</h2>
+    {% include 'components/header.html' %}
+    {% include 'components/flashes.html' %}
+    <form id="changeUsernameForm" action="{{ url_for('app.post_username_change') }}" method="POST">
+
+        <label for="username">New Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <button type="submit">Save</button>
+
+    </form>
+</body>
+</html>

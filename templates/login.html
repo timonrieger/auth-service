@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    {% include 'components/header.html' %}
+    {% include 'components/flashes.html' %}
+    <form id="loginForm" action="{{ url_for('app.post_login', next=request.args.get('next')) }}" method="POST">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+        
+    </form>
+</body>
+</html>
