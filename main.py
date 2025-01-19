@@ -11,6 +11,7 @@ from flask import (
     send_file,
     session,
 )
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import *
 from database import User as UserModel
@@ -33,6 +34,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DB_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+CORS(app, resources={r"/api/*": {"origins": ["https://timonrieger.de"]}})
 
 db.init_app(app)
 
@@ -489,4 +492,4 @@ def get_archive():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=False)
