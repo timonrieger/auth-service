@@ -17,7 +17,6 @@ from database import User as UserModel
 from utils import Manager
 from dotenv import load_dotenv
 import os
-from flask_rebar import Rebar
 from flask_login import (
     UserMixin,
     login_user,
@@ -55,11 +54,6 @@ class User(UserMixin, UserModel):
 
 manager = Manager()
 
-rebar = Rebar()
-
-api_registry = rebar.create_handler_registry(prefix="/api/")
-app_registry = rebar.create_handler_registry(prefix="/app/")
-
 
 with app.app_context():
     create_all(app)
@@ -71,7 +65,7 @@ def health():
 
 
 # API ENDPOINTS
-@api_registry.handles("/register", method="POST")
+@app.route("/api/register", methods=["POST"])
 def register():
     data = request.get_json()
     if not data:
@@ -123,7 +117,7 @@ def register():
     )
 
 
-@api_registry.handles("/login", method="POST")
+@app.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
     if not data:
@@ -145,7 +139,7 @@ def login():
     return jsonify({"message": "Invalid credentials!"}), 401
 
 
-@api_registry.handles("/apikey/verify", method="GET")
+@app.route("/api/apikey/verify", methods=["GET"])
 def verify_apikey():
     token = request.headers.get("Authorization")
     if token is None:
@@ -167,7 +161,7 @@ def verify_apikey():
     return jsonify({"message": "Invalid credentials!"}), 401
 
 
-@api_registry.handles("/apikey/create", method="POST")
+@app.route("/api/apikey/create", methods=["POST"])
 def create_apikey():
     data = request.get_json()
     if not data:
@@ -193,7 +187,7 @@ def create_apikey():
     )
 
 
-@api_registry.handles("/account/confirm", method="GET")
+@app.route("/api/account/confirm", methods=["GET"])
 def confirm():
     data = request.args.to_dict()
     user = User.query.get(data["id"])
@@ -209,38 +203,38 @@ def confirm():
     return render_template("redirect.html", redirect_url=data["then"])
 
 
-@api_registry.handles("/email/confirm", method="GET")
+@app.route("/api/email/confirm", methods=["GET"])
 @login_required
 def confirm_email_change():
     data = request.args.to_dict()
     if not manager.check_token(data["token"]):
         flash("Invalid confirmation link!", "danger")
-        return redirect(f"{request.url_root}/{app_registry.prefix}")
+        return redirect(f"{request.url_root}/app")
 
     current_user.email = session["pending_email"]
     session.pop("pending_email", None)
     db.session.commit()
     flash("Your email address has been updated successfully!", "success")
 
-    return redirect(f"{request.url_root}/{app_registry.prefix}")
+    return redirect(f"{request.url_root}/app")
 
 
 # APP ENDPOINTS
-@app_registry.handles("/", method="GET")
+@app.route("/app/", methods=["GET"])
 def dashboard():
     return render_template("index.html")
 
 
-@app_registry.handles("/login", method="GET")
+@app.route("/app/login", methods=["GET"])
 def get_login():
     if current_user.is_authenticated:
         flash("Already logged in!", "danger")
-        return redirect(f"{request.url_root}/{app_registry.prefix}")
+        return redirect(f"{request.url_root}/app")
 
     return render_template("login.html")
 
 
-@app_registry.handles("/login", method="POST")
+@app.route("/app/login", methods=["POST"])
 def post_login():
     data = request.form
 
@@ -264,30 +258,30 @@ def post_login():
         if redirect_to:
             print(redirect_to)
             return redirect(redirect_to)
-        return redirect(f"{request.url_root}/{app_registry.prefix}")
+        return redirect(f"{request.url_root}/app")
 
     flash("Invalid credentials!", "danger")
     return redirect(request.url)
 
 
-@app_registry.handles("/logout", method="GET")
+@app.route("/app/logout", methods=["GET"])
 def logout():
     if current_user.is_anonymous:
         flash("Already logged out!", "danger")
-        return redirect(f"{request.url_root}/{app_registry.prefix}")
+        return redirect(f"{request.url_root}/app")
 
     logout_user()
     flash(f"Logout successful!", "success")
-    return redirect(f"{request.url_root}/{app_registry.prefix}")
+    return redirect(f"{request.url_root}/app")
 
 
-@app_registry.handles("/password/change", method="GET")
+@app.route("/app/password/change", methods=["GET"])
 @login_required
 def get_password_change():
     return render_template("change-password.html")
 
 
-@app_registry.handles("/password/change", method="POST")
+@app.route("/app/password/change", methods=["POST"])
 @login_required
 def post_password_change():
     data = request.form
@@ -302,15 +296,15 @@ def post_password_change():
     db.session.commit()
     flash("Password change successful!", "success")
 
-    return redirect(f"{request.url_root}/{app_registry.prefix}")
+    return redirect(f"{request.url_root}/app")
 
 
-@app_registry.handles("/password/reset", method="GET")
+@app.route("/app/password/reset", methods=["GET"])
 def get_password_reset():
     return render_template("reset-password.html")
 
 
-@app_registry.handles("/password/reset", method="POST")
+@app.route("/app/password/reset", methods=["POST"])
 def post_password_reset():
     data = request.form
 
@@ -348,13 +342,13 @@ def post_password_reset():
     return redirect(request.url)
 
 
-@app_registry.handles("/email/change", method="GET")
+@app.route("/app/email/change", methods=["GET"])
 @login_required
 def get_email_change():
     return render_template("change-email.html")
 
 
-@app_registry.handles("/email/change", method="POST")
+@app.route("/app/email/change", methods=["POST"])
 @login_required
 def post_email_change():
     data = request.form
@@ -397,13 +391,13 @@ def post_email_change():
     return redirect(request.url)
 
 
-@app_registry.handles("/username/change", method="GET")
+@app.route("/app/username/change", methods=["GET"])
 @login_required
 def get_username_change():
     return render_template("change-username.html")
 
 
-@app_registry.handles("/username/change", method="POST")
+@app.route("/app/username/change", methods=["POST"])
 @login_required
 def post_username_change():
     data = request.form
@@ -425,20 +419,20 @@ def post_username_change():
     return redirect(request.url)
 
 
-@app_registry.handles("/name/change", method="GET")
+@app.route("/app/name/change", methods=["GET"])
 @login_required
 def get_name_change():
     flash("Changing your display name is not yet possible.", "danger")
     return render_template("change-name.html")
 
 
-@app_registry.handles("/name/change", method="POST")
+@app.route("/app/name/change", methods=["POST"])
 @login_required
 def post_name_change():
     return redirect(request.url)
 
 
-@app_registry.handles("/account/delete", method="GET")
+@app.route("/app/account/delete", methods=["GET"])
 @login_required
 def get_account_deletion():
     flash("WARNING: Deleting your account is permanent and cannot be undon!", "danger")
@@ -446,13 +440,13 @@ def get_account_deletion():
     return render_template("delete-account.html")
 
 
-@app_registry.handles("/account/delete", method="POST")
+@app.route("/app/account/delete", methods=["POST"])
 @login_required
 def post_account_deletion():
     return redirect(request.url)
 
 
-@app_registry.handles("/archive", method="GET")
+@app.route("/app/archive", methods=["GET"])
 @login_required
 def get_archive():
     user = User.query.filter_by(id=current_user.id).first()
@@ -495,5 +489,4 @@ def get_archive():
 
 
 if __name__ == "__main__":
-    rebar.init_app(app)
     app.run(debug=True, port=5001)

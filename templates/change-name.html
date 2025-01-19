@@ -8,7 +8,7 @@
     <h2>Change Display Name</h2>
     {% include 'components/header.html' %}
     {% include 'components/flashes.html' %}
-    <form id="changeNameForm" action="{{ url_for('app.post_name_change') }}" method="POST">
+    <form id="changeNameForm" action="{{ url_for('post_name_change') }}" method="POST">
 
         <label for="name">New Name:</label>
         <input type="text" id="name" name="name" required>

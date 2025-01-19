@@ -8,7 +8,7 @@
     <h2>Change Email Adress</h2>
     {% include 'components/header.html' %}
     {% include 'components/flashes.html' %}
-    <form id="changeEmailForm" action="{{ url_for('app.post_email_change') }}" method="POST">
+    <form id="changeEmailForm" action="{{ url_for('post_email_change') }}" method="POST">
 
         <label for="email">New Email Adress:</label>
         <input type="email" id="email" name="email" required>

@@ -17,33 +17,33 @@
   <ul style="gap: 100px">
     {% if current_user.is_authenticated %}
     <li>
-      <a href="{{ url_for('app.logout') }}">Logout</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
     </li>
     {% else %}
     <li>
-      <a href="{{ url_for('app.get_login') }}">Login</a>
+      <a href="{{ url_for('get_login') }}">Login</a>
     </li>
     {% endif %}
     <li>
-      <a href="{{ url_for('app.get_username_change') }}">Change your username</a>
+      <a href="{{ url_for('get_username_change') }}">Change your username</a>
     </li>
     <li>
-      <a href="{{ url_for('app.get_name_change') }}">Change your displaying name</a>
+      <a href="{{ url_for('get_name_change') }}">Change your displaying name</a>
     </li>
     <li>
-      <a href="{{ url_for('app.get_password_reset') }}">Reset your password</a>
+      <a href="{{ url_for('get_password_reset') }}">Reset your password</a>
     </li>
     <li>
-      <a href="{{ url_for('app.get_password_change') }}">Change your password</a>
+      <a href="{{ url_for('get_password_change') }}">Change your password</a>
     </li>
     <li>
-      <a href="{{ url_for('app.get_email_change') }}">Change your email adress</a>
+      <a href="{{ url_for('get_email_change') }}">Change your email adress</a>
     </li>
     <li>
-      <a href="{{ url_for('app.get_account_deletion') }}">Delete your account</a>
+      <a href="{{ url_for('get_account_deletion') }}">Delete your account</a>
     </li>
     <li>
-      <a href="{{ url_for('app.get_archive') }}">Request an archive of your data</a>
+      <a href="{{ url_for('get_archive') }}">Request an archive of your data</a>
     </li>
   </ul>
 </body>
