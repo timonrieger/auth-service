@@ -1,6 +1,5 @@
 import io
 import json
-from pathlib import Path
 from flask import (
     Flask,
     flash,
@@ -470,21 +469,20 @@ def get_archive():
             "posts": [post.to_dict() for post in blog_posts],
             "comments": [comment.to_dict() for comment in blog_comments],
         },
-    }
-    file_path = Path("archive.json")
-    with open(file_path, "w") as file:
-        json.dump(archive, file, indent=4)
+    }   
+    buffer = io.BytesIO()
 
-    archive_data = io.BytesIO()
-    with open(file_path, "rb") as fo:
-        archive_data.write(fo.read())
-    # (after writing, cursor will be at last byte, so move it to start)
-    archive_data.seek(0)
+    # Serialize the archive to JSON as a string
+    json_string = json.dumps(archive, indent=4)
 
-    os.remove(file_path)
+    # Write the JSON string to the in-memory buffer
+    buffer.write(json_string.encode('utf-8'))
+
+    # Seek back to the beginning of the buffer
+    buffer.seek(0)
 
     return send_file(
-        archive_data,
+        buffer,
         mimetype="application/json",
         download_name="data.json",
         as_attachment=True,
