@@ -12,11 +12,11 @@ This project is a Flask-based centralized authentication service that provides u
 - Redirect URLs for seamless UX
 - API Key management (creation and verification)
 - User management frontend to give the user full control about his account
+- Data export
 
 ## Limitations
 
 - No user account deletion
-- No data export per user 
 
 ## Requirements
 
@@ -66,8 +66,7 @@ Send a POST request to `/register` with the following parameters:
 - `then` (URL to redirect after account confirmation)
 
 ```python
-data = {"email": email, "password": password, "username": username, "then": "https://YOURDOMAIN/login"
-}
+data = {"email": email, "password": password, "username": username, "then": "https://YOURDOMAIN/login"}
 response = requests.post(f"{AUTH_URL}/register", json=data)
 ```
 
@@ -117,9 +116,9 @@ Your code might look like this for logging a user in (using flask and flask_logi
 ```python
 response = requests.post(url=f"{AUTH_URL}/login", json=data)
 if response.status_code == 200:
-		flash(response.json()['message'], "success")
-		login_user(user)
-		return redirect(url_for("home"))
+	flash(response.json()['message'], "success")
+	login_user(user)
+	return redirect(url_for("home"))
 flash(response.json()['message'], "error")
 ```
 
