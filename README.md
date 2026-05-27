@@ -18,13 +18,6 @@ This project is a Flask-based centralized authentication service that provides u
 
 - No user account deletion
 
-## Requirements
-
-- Flask
-- Flask-SQLAlchemy
-- Werkzeug
-- python-dotenv
-
 ## Setup
 
 1. Clone the repository:
@@ -33,26 +26,20 @@ This project is a Flask-based centralized authentication service that provides u
 	cd auth-service
 	```
 
-2. Create a virtual environment and activate it:
+2. Install dependencies with [uv](https://docs.astral.sh/uv/):
 	```sh
-	python -m venv venv
-	source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+	uv sync
 	```
 
-3. Install the required packages:
-	```sh
-	pip install -r requirements.txt
-	```
-
-4. Create a `.env` file in the root directory and add your configuration settings. Use the database URL provided by your hosting service. Ensure the connection string matches the one used in the database:
+3. Create a `.env` file in the root directory and add your configuration settings. Use the database URL provided by your hosting service. Ensure the connection string matches the one used in the database:
 	```env
 	SECRET_KEY=your_secret_key
 	DB_URI=your_database_uri
 	```
 
-5. Run the application:
+4. Run the application:
 	```sh
-	python3 -m main
+	uv run python main.py
 	```
 
 ## Usage
