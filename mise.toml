@@ -1,0 +1,35 @@
+[tools]
+python = "3.12"
+uv = "latest"
+
+[env]
+_.python.venv = { path = ".venv" }
+
+[tasks.lint]
+run = "uvx pre-commit run --all-files"
+description = "Run pre-commit hooks"
+
+[tasks."lint:fix"]
+run = "uvx pre-commit run --all-files || true"
+description = "Run pre-commit hooks without failing"
+
+[tasks.dev]
+run = "uv run python main.py"
+description = "Start the development server"
+
+[tasks.install]
+run = "uv sync --all-groups --all-extras"
+alias = "i"
+description = "Install dependencies (alias: 'i')"
+
+[tasks."install:upgrade"]
+run = "mise run install --upgrade"
+description = "Upgrade dependencies in the allowed ranges"
+
+[tasks."install:check"]
+run = "uv tree --outdated --all-groups --depth 1"
+description = "Check dependencies for updates"
+
+[tasks.setup]
+run = ["mise run install", "uvx pre-commit install"]
+description = "Setup the project"

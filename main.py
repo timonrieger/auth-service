@@ -12,8 +12,16 @@ from flask import (
 )
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from database import *
-from database import User as UserModel
+from database import (
+    AirNomads,
+    BlogComment,
+    BlogPost,
+    Ressources,
+    TopMovies,
+    User as UserModel,
+    create_all,
+    db,
+)
 from utils import Manager
 from dotenv import load_dotenv
 import os
@@ -181,7 +189,7 @@ def create_apikey():
     return (
         jsonify(
             {
-                "message": f"API Key created successful! Use it in the API request Authorization header.",
+                "message": "API Key created successful! Use it in the API request Authorization header.",
                 "data": plain_key,
             }
         ),
@@ -273,7 +281,7 @@ def logout():
         return redirect(f"{request.url_root}/app")
 
     logout_user()
-    flash(f"Logout successful!", "success")
+    flash("Logout successful!", "success")
     return redirect(f"{request.url_root}/app")
 
 
@@ -469,14 +477,14 @@ def get_archive():
             "posts": [post.to_dict() for post in blog_posts],
             "comments": [comment.to_dict() for comment in blog_comments],
         },
-    }   
+    }
     buffer = io.BytesIO()
 
     # Serialize the archive to JSON as a string
     json_string = json.dumps(archive, indent=4)
 
     # Write the JSON string to the in-memory buffer
-    buffer.write(json_string.encode('utf-8'))
+    buffer.write(json_string.encode("utf-8"))
 
     # Seek back to the beginning of the buffer
     buffer.seek(0)

@@ -11,7 +11,6 @@ dotenv.load_dotenv()
 
 
 class Manager:
-
     def __init__(
         self,
         my_mail=os.getenv("SMTP_EMAIL"),
@@ -84,7 +83,6 @@ class Manager:
         return self.Mail(self, user_mail, user_id, redirect_url, task, token, username)
 
     class Mail:
-
         def __init__(
             self, manager, user_mail, user_id, redirect_url, task, token, username=""
         ):
