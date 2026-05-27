@@ -6,4 +6,4 @@ email-validator==2.2.0
 Flask_Login==0.6.3
 black==24.10.0
 flask-cors==5.0.0
-git+https://git@github.com/timonrieger/database-service.git
+database-service @ git+https://git@github.com/timonrieger/database-service.git
